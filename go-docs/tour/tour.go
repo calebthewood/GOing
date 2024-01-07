@@ -4,11 +4,13 @@ package main
 import (
 	"fmt"
 	"math"
+	"runtime"
 )
 
 func main() {
 	// looping()
-	conditionals()
+	// conditionals()
+	switching()
 
 }
 
@@ -73,11 +75,26 @@ func guessPow(x float64) float64 {
 }
 
 func conditionals() {
-	// fmt.Println(sqrt(2), sqrt(-4))
-	// fmt.Println(
-	// 	pow(3, 2, 10),
-	// 	pow(3, 3, 20),
-	// )
+	fmt.Println(sqrt(2), sqrt(-4))
+	fmt.Println(
+		pow(3, 2, 10),
+		pow(3, 3, 20),
+	)
 	fmt.Println(guessPow(123456))
 	fmt.Println(math.Sqrt(123456))
+}
+
+// V. similar to JS, except the break statements are implicit, and
+// switch value can can be more varied types it stops running after matching.
+func switching() {
+	fmt.Print("Go runs on ")
+	switch os := runtime.GOOS; os {
+	case "darwin":
+		fmt.Println("OS X.")
+	case "linux":
+		fmt.Println("Linux")
+	default:
+		//freebsd, openbsd, plan9, windows...
+		fmt.Printf("%s. \n", os)
+	}
 }
