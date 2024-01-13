@@ -3,15 +3,28 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math"
+	"os"
 	"runtime"
 	"time"
 )
 
+// control flow statements
+//    if, else
+//    for - for loop (and while loop)
+//    switch - the usual swtich-case statement
+//    goto - review
+//    defer- executes line when parent function returns
+//    panic - stops execution of function, calls deferreds, moving up the stack until crashing the program.
+//    recover - recovers a panic, (perhaps like catch in js try-catch)
+
 func main() {
 	// looping()
 	// conditionals()
-	switching()
+	// switching()
+	// deferring()
+	panicking()
 
 }
 
@@ -109,3 +122,75 @@ func switching() {
 		fmt.Println("Good evening.")
 	}
 }
+
+// Defer, executes when the function returns
+func deferring() {
+	defer fmt.Println("world")
+	// weirdly, it moves backwards so "hey hi" runs before "world"
+	defer fmt.Println("hey hi")
+
+	fmt.Println("hello")
+}
+
+// Defer example.
+// can type both args with one type annotation?
+// src == source
+// dst == destination
+func CopyFile(dstName, srcName string) (written int64, err error) {
+	src, err := os.Open(srcName)
+	if err != nil {
+		return
+	}
+	defer src.Close() // defer is evaluated WHEN IT IS EXECUTED. so note if src is modified again later in the fn
+
+	dst, err := os.Create(dstName)
+	if err != nil {
+		return
+	}
+	defer dst.Close()
+
+	written, err = io.Copy(dst, src)
+	return
+}
+
+// panic
+func panicking() {
+	f()
+	fmt.Println("Returned normally from f.")
+}
+
+func f() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in f", r)
+		}
+	}()
+	fmt.Println("Calling g.")
+	g(0)
+	fmt.Println("Returned normally from g.")
+}
+
+func g(i int) {
+	if i > 3 {
+		fmt.Println("Panicking!")
+		panic(fmt.Sprintf("%v", i))
+	}
+	defer fmt.Println("Defer in g", i)
+	fmt.Println("Printing in g", i)
+	g(i + 1)
+}
+
+/* Output from panicking()
+Calling g.
+Printing in g 0
+Printing in g 1
+Printing in g 2
+Printing in g 3
+Panicking!
+Defer in g 3
+Defer in g 2
+Defer in g 1
+Defer in g 0
+Recovered in f 4
+Returned normally from f.
+*/
