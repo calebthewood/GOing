@@ -27,7 +27,11 @@ func main() {
 	// panicking()
 	// pointing()
 	// structing()
-	araayed()
+	// arrayed()
+	// slicing()
+	// moreSlicing()
+	// nilSlice()
+	makeSlice()
 }
 
 func looping() {
@@ -251,12 +255,179 @@ func structing() {
 /*
 	 Arrays
 		go arrays set their size
+		arrays have a fixed size, set when created
 		'var a [10]int' where a is an array of 10 ints
 */
-func araayed() {
-	var a [10]int
+func arrayed() {
+	var n [10]int // initialized as a array of ten 0's
 
-	for i := 0; i < len(a); i++ {
-		fmt.Println(a[i])
+	for i := 0; i < len(n); i++ {
+		fmt.Println(n[i])
 	}
+
+	var a [2]string
+	a[0] = "Hello"
+	a[1] = "World"
+	fmt.Println(a[0], a[1])
+	fmt.Println(a)
+
+	primes := [6]int{2, 3, 5, 7, 11, 13}
+	fmt.Println(primes)
+}
+
+/*
+	 Slices
+		a dynamically sized, flexible view into the elements of an array.
+		wut?
+		created by setting an upper and lower bound on an array
+		apparently much more commonly used than arrays in go
+		a slice is not a copy of the array, but modidying the slice
+		will modify the array it describes
+		low is inclusive, high is exclusive
+*/
+func slicing() {
+	primes := [6]int{2, 3, 5, 7, 11, 13}
+
+	var s []int = primes[1:4] // high of 5, low of 1
+	fmt.Println(s)
+
+	names := [4]string{
+		"John",
+		"Paul",
+		"George",
+		"Ringo",
+	}
+	fmt.Println(names)
+
+	a := names[0:2]
+	b := names[1:3]
+	fmt.Println(a, b)
+
+	b[0] = "XXX"
+	fmt.Println(a, b)
+	fmt.Println(names)
+
+	// slice literal
+	// c := [3]bool{true, true, false}
+	// d := []bool{true, true, false}
+
+	q := []int{2, 3, 5, 7, 11, 13}
+	fmt.Println(q)
+
+	r := []bool{true, false, true, true, false, true}
+	fmt.Println(r)
+
+	structy := []struct {
+		i int
+		b bool
+	}{
+		{2, true},
+		{3, false},
+		{5, true},
+		{7, true},
+		{11, false},
+		{13, true},
+	}
+	fmt.Println(structy)
+	arr := [10]string{"hi"}
+	fmt.Println("arr", arr)
+}
+
+// This is how you would manually increase the size of a slice (or array)
+// by creating a new one, double the size, and copying it.
+func doubleTheSizeOfASlice(s []byte) []byte {
+	t := make([]byte, len(s), (cap(s)+1)*2) // +1 in case cap(s) == 0
+	for i := range s {
+		t[i] = s[i]
+	}
+	s = t
+	return t
+}
+
+func betterSliceSizeIncrease(s []byte) {
+	t := make([]byte, len(s), (cap(s)+1)*2)
+	copy(t, s)
+	s = t
+}
+
+// taken from go docs
+// whew, there is a proper append function
+func AppendByte(slice []byte, data ...byte) []byte {
+	sliceLength := len(slice)
+	allLength := sliceLength + len(data)
+
+	if allLength > cap(slice) { // if necessary, reallocate
+		// allocate double what's needed, for future growth.
+		newSlice := make([]byte, (allLength+1)*2)
+		copy(newSlice, slice)
+		slice = newSlice
+	}
+	slice = slice[0:allLength]
+	copy(slice[sliceLength:allLength], data)
+	return slice
+}
+
+// Filter returns a new slice holding only
+// the elements of s that satisfy fn()
+func Filter(slice []int, predicate func(int) bool) []int {
+	var p []int // == nil
+	for _, v := range slice {
+		if predicate(v) {
+			p = append(p, v)
+		}
+	}
+	return p
+}
+
+func moreSlicing() {
+	s := []int{2, 3, 5, 7, 11, 13}
+	printSlice(s)
+
+	// Slice the slice to give it zero length.
+	s = s[:0]
+	printSlice(s)
+
+	// Extend its length.
+	s = s[:4]
+	printSlice(s)
+
+	// Drop its first two values.
+	s = s[2:]
+	printSlice(s)
+
+	// grow it past it's capacity
+	s = s[2:]
+	s = append(s, 1, 2, 3, 4, 5)
+	printSlice(s)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+
+func nilSlice() {
+	var s []int
+	fmt.Println(s, len(s), cap(s))
+	if s == nil {
+		fmt.Println("nil!")
+	}
+}
+
+func makeSlice() {
+	a := make([]int, 5)
+	printSlice2("a", a)
+
+	b := make([]int, 0, 5)
+	printSlice2("b", b)
+
+	c := b[:2]
+	printSlice2("c", c)
+
+	d := c[2:5]
+	printSlice2("d", d)
+}
+
+func printSlice2(s string, x []int) {
+	fmt.Printf("%s len=%d cap=%d %v\n",
+		s, len(x), cap(x), x)
 }
