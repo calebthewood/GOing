@@ -24,8 +24,10 @@ func main() {
 	// conditionals()
 	// switching()
 	// deferring()
-	panicking()
-
+	// panicking()
+	// pointing()
+	// structing()
+	araayed()
 }
 
 func looping() {
@@ -194,3 +196,67 @@ Defer in g 0
 Recovered in f 4
 Returned normally from f.
 */
+
+/*
+Pointers
+
+	a pointer holds the memory address of a value
+	"*" operator denotes the pointer's underlying value
+	"&" operator generates a pointer to its operand
+*/
+func pointing() {
+	i, j := 42, 2701
+
+	p := &i
+	fmt.Println(*p)
+	*p = 21
+	fmt.Println(i)
+
+	p = &j
+	*p = *p / 37
+	fmt.Println(j)
+}
+
+/* Output
+42
+21
+73
+*/
+
+/*
+	 Structs
+		a collection of fields
+		accessed using . notation
+		when using a pointer, (*p).X == p.X
+			Why use a pointer?
+*/
+func structing() {
+	type Vertex struct {
+		X int
+		Y int
+	}
+	structA := Vertex{3, 4}
+	fmt.Println(Vertex{1, 2}.Y)
+	fmt.Println(structA.X)
+
+	var (
+		v1 = Vertex{1, 2}
+		v2 = Vertex{X: 1} // name syntax
+		v3 = Vertex{}     // i guess ints default to 0, do all ints do this?
+		p  = &Vertex{1, 2}
+	)
+	fmt.Println(v1, p, v2, v3)
+}
+
+/*
+	 Arrays
+		go arrays set their size
+		'var a [10]int' where a is an array of 10 ints
+*/
+func araayed() {
+	var a [10]int
+
+	for i := 0; i < len(a); i++ {
+		fmt.Println(a[i])
+	}
+}
