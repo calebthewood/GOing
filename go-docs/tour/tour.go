@@ -414,9 +414,11 @@ func nilSlice() {
 }
 
 func makeSlice() {
+	// make a slice of ints with length 5
 	a := make([]int, 5)
 	printSlice2("a", a)
 
+	// make a slice
 	b := make([]int, 0, 5)
 	printSlice2("b", b)
 
