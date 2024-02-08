@@ -6,6 +6,12 @@ import (
 	"math/rand"
 )
 
+// Common Commands
+// % go run
+// % go build
+// % go install
+// % go test
+
 // Hellow returns a greeting for the named person.
 func Hello(name string) (string, error) {
 	// If no name, return err

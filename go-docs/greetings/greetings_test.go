@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// to run tests, enter this command from same directory. -v flag for verbose.
+// % go test -v
 // happy path
 func TestHelloName(t *testing.T) {
 	name := "Gladys"
