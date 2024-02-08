@@ -3,6 +3,3 @@
 - Go Docs Tuorial
 - Mastering GoLang
 - GoLang, The Ultimate Guide
-
-# PR TEST
-Hey There
